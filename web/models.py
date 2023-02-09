@@ -5,18 +5,23 @@ from django.db import models
 User = get_user_model()
 
 
-class Note(models.Model):
-    title = models.CharField(max_length=500)
-    text = models.TextField()
+class BaseModels(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Note(BaseModels):
+    title = models.CharField(max_length=500)
+    text = models.TextField()
+
     alert_send_at = models.DateTimeField(null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Tag(models.Model):
+class Tag(BaseModels):
     title = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     parent_tag = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
