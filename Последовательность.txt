@@ -1,0 +1,6 @@
+Склонировать репозиторий - git clone (Ссылка на репозиторий)
+Создать gitignore файл - copy con .gitignore
+Создать виртуальное окружение - python -m venv .venv
+Активация выртуального окружения - .venv\Scripts\activate.bat
+Создаем папку для зависимостей - copy con requirements.txt
+Записываем зависимость django~=(следняяверсия) и грузим зависимости - pip install -r requirements.txt
