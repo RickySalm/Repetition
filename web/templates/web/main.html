@@ -2,13 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Заметки</title>
 </head>
 <body>
 
-    <h1>Notes</h1>
+    <h1>Заметки</h1>
     <hr>
-    <h2>Notes List</h2>
+    <h2>Список заметок</h2>
+    <p>Количество заметок: {{ count }}</p>
+
+    <ul>
+        {% for note in notes %}
+            <li>
+                <b>{{ note.title }}</b> <small>#({{ note.id }})</small>
+            </li>
+        {% endfor %}
+    </ul>
 
 </body>
 </html>

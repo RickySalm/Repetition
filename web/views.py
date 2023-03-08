@@ -7,10 +7,7 @@ from web.models import Note
 def main_view(request):
     notes = Note.objects.all()
     print(notes)
-    for note in notes:
-        print(note)
-        print(note.title)
-        print(note.text)
-        print(note.user.first_name)
-        print(note.user)
-    return render(request, 'web/main.html')
+    return render(request, 'web/main.html', {
+        'count': Note.objects.count(),
+        'notes': notes,
+    })
