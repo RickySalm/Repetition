@@ -4,3 +4,12 @@
 Активация выртуального окружения - .venv\Scripts\activate.bat
 Создаем папку для зависимостей - copy con requirements.txt
 Записываем зависимость django~=(следняяверсия) и грузим зависимости - pip install -r requirements.txt
+
+Создаем проект django - django-admin startproject (название проекта)
+Запуск сервера - python manage.py runserver
+
+Старт приложения - python manage.py startapp web
+
+
+Создание миграций - python manage.py makemigrations
+Выполнение миграций - python manage.py migrate
