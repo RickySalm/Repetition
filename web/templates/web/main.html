@@ -1,3 +1,4 @@
+{% load notes %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,14 @@
     <h1>Заметки</h1>
     <hr>
     <h2>Список заметок</h2>
-    <p>Количество заметок: {{ count }}.</p>
+    <p>
+        Количество заметок: {{ count }}.
+        Выводить
+
+        {% filter_link 'все заметки' '' query_params %} |
+        {% filter_link 'с напоминаниями' 'with_alerts' query_params %}
+
+    </p>
 
     <ul>
         {% for note in notes %}
