@@ -24,5 +24,5 @@ class Note(BaseModels):
     text = models.TextField()
 
     alert_send_at = models.DateTimeField(null=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
