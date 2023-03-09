@@ -13,6 +13,6 @@ class NoteForm(forms.ModelForm):
         fields = ('title', 'text')
 
 
-class RegistrationForm(forms.Form):
+class AuthForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)

@@ -5,25 +5,22 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Регистрация</title>
+    <title>Авторизация</title>
 </head>
 <body>
 
 <a href="{% url 'main' %}">Главная страница</a>
 
-<h1>Регистрация</h1>
+<h1>Вход</h1>
 {% if form.errors %}
     <b>Пожалуйста исправьте ошибки: {{ form.errors }}</b>
 {% endif %}
 
-{% if is_success %}
-    <p><b>Вы успешно зарегистрировались</b></p>
-{% else %}
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button>Зарегистрироваться</button>
-    </form>
-{% endif %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>Войти</button>
+</form>
+
 </body>
 </html>
