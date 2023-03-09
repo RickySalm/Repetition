@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from web.models import Note, Tag
+from web.models import Note, Tag, User
 
 
 def main_view(request):
@@ -45,9 +45,26 @@ def notes_view(request):
 
 def note_view(request, id):
     note = get_object_or_404(Note, id=id)
-    return render(request, 'web/note.html',{
+    return render(request, 'web/note.html', {
         'note': note
     })
 
+
 def note_add_view(request):
-    return render(request, 'web/note_form.html')
+    user = User.objects.first()
+    error = None
+    title = None
+    text = None
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+        if not title or not text:
+            error = 'Название или текст не заполнены. Их нужно заполнить.'
+        else:
+            note = Note.objects.create(title=title, text=text, user=user)
+            return redirect('note', note.id)
+    return render(request, 'web/note_form.html', {
+        'error': error,
+        'title': title,
+        'text': text,
+    })

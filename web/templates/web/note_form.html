@@ -14,9 +14,28 @@
 
 <h1>Создание заметки</h1>
 
+{% if error %}
+    <b>Ошибка: {{ error }}</b>
+
+{% endif %}
+
+<br><br>
+
 <form action="" method="post">
-    <label fro="">Название</label>
-    <input type="text" name="title">
+    {% csrf_token %}
+    <label>
+        Название <br>
+        <input type="text" name="title" placeholder="Введите название" value="{{ title|default_if_none:'' }}">
+    </label>
+    <br><br>
+    <label>
+        Текст <br>
+        <textarea  name="text" placeholder="Введите текст">{{ text|default_if_none:'' }}</textarea>
+    </label>
+
+    <br><br>
+
+    <button>Добавить заметку</button>
 </form>
 
 </body>
