@@ -27,17 +27,8 @@
 
 <form action="" method="post">
     {% csrf_token %}
-    <label>
-        Название <br>
-        <input type="text" name="title" placeholder="Введите название" value="{{ title|default_if_none:'' }}">
-    </label>
-    <br><br>
-    <label>
-        Текст <br>
-        <textarea  name="text" placeholder="Введите текст">{{ text|default_if_none:'' }}</textarea>
-    </label>
 
-    <br><br>
+    {{ form.as_p }}
 
     <button>Добавить заметку</button>
 </form>
