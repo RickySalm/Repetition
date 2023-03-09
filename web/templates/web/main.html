@@ -24,6 +24,7 @@
         <button>Найти в Google</button>
     </form>
 
+
     <br>
 
     <form action="" method="get">
@@ -42,8 +43,11 @@
         </select>
 
         <button>Найти</button>
-
     </form>
+
+    <br>
+
+    <a href="{% url 'notes_add' %}">Добавить заметку</a>
 
     <ul>
         {% for note in notes %}
