@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from web.models import Note, Tag
 
@@ -44,7 +44,7 @@ def notes_view(request):
 
 
 def note_view(request, id):
-    note = Note.objects.get(id=id)
+    note = get_object_or_404(Note, id=id)
     return render(request, 'web/note.html',{
         'note': note
     })
