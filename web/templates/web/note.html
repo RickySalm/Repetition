@@ -10,6 +10,7 @@
 <body>
 
     <a href="{% url 'notes_list' %}">Список заметок</a>
+    <a href="{% url 'notes_edit' note.id%}">Редактировать заметку</a>
 
     <h1>{{ note.title }}</h1>
 
