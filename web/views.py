@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from web.form import NoteForm, AuthForm
 from web.models import Note, Tag, User
@@ -14,12 +15,15 @@ def main_view(request):
 def notes_view(request):
     with_alerts = 'with_alerts' in request.GET
     search = request.GET.get('search', None)
-    notes = Note.objects.all()
 
     try:
         tag_id = int(request.GET.get('tag_id', None))
     except (TypeError, ValueError):
         tag_id = None
+    if request.user.is_authenticated:
+        notes = Note.objects.filter(user=request.user)
+    else:
+        notes = Note.objects.none()
 
     if with_alerts:
         notes = notes.filter(alert_send_at__isnull=False)
@@ -45,6 +49,7 @@ def notes_view(request):
     })
 
 
+@login_required
 def note_view(request, id):
     note = get_object_or_404(Note, id=id)
     return render(request, 'web/note.html', {
@@ -53,7 +58,6 @@ def note_view(request, id):
 
 
 def note_edit_view(request, id=None):
-    user = User.objects.first()
     form = NoteForm()
 
     if id is not None:
@@ -61,7 +65,7 @@ def note_edit_view(request, id=None):
         form = NoteForm(instance=note)
 
     if request.method == 'POST':
-        form = NoteForm(request.POST, initial={'user': user})
+        form = NoteForm(request.POST, initial={'user': request.user})
         if form.is_valid():
             note = form.save()
             return redirect('note', note.id)
@@ -100,7 +104,10 @@ def login_view(request):
                 message = 'Электронная почта или пароль не правильный'
             else:
                 login(request, user)
-                return redirect('main')
+                next_url = 'main'
+                if 'next' in request.GET:
+                    next_url = request.GET.get('next')
+                return redirect(next_url)
     return render(request, 'web/login.html', {
         'form': form,
         'message': message,
