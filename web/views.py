@@ -54,7 +54,7 @@ def note_view(request, id):
 def note_edit_view(request, id=None):
     user = User.objects.first()
     text, title = None, None
-    form = NoteForm(request.POST)
+    form = NoteForm()
     note = None
     if id is not None:
         note = get_object_or_404(Note, id=id)
@@ -62,7 +62,7 @@ def note_edit_view(request, id=None):
         text = note.text
 
     if request.method == 'POST':
-
+        form = NoteForm(request.POST)
         title = request.POST.get('title')
         text = request.POST.get('text')
         if form.is_valid():
