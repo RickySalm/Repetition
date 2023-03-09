@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -78,8 +78,8 @@ def registration_view(request):
     if request.method == 'POST':
         form = AuthForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            user = User(email=email, username=email.split('@')[0])
+            username = form.cleaned_data['username']
+            user = User(username=username)
             user.set_password(form.cleaned_data['password'])
             user.save()
             is_success = True
@@ -89,7 +89,7 @@ def registration_view(request):
     })
 
 
-def auth_view(request):
+def login_view(request):
     form = AuthForm()
     message = None
     if request.method == 'POST':
@@ -98,8 +98,15 @@ def auth_view(request):
             user = authenticate(request, **form.cleaned_data)
             if user is None:
                 message = 'Электронная почта или пароль не правильный'
-
+            else:
+                login(request, user)
+                return redirect('main')
     return render(request, 'web/login.html', {
         'form': form,
         'message': message,
     })
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('main')

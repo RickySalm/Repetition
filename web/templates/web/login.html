@@ -12,6 +12,11 @@
 <a href="{% url 'main' %}">Главная страница</a>
 
 <h1>Вход</h1>
+
+{% if message %}
+    <b>{{ message }}</b>
+{% endif %}
+
 {% if form.errors %}
     <b>Пожалуйста исправьте ошибки: {{ form.errors }}</b>
 {% endif %}
