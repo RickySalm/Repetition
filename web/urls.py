@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 
-from web.views import NotesListView, main_view, NoteDetailView, note_edit_view, RegistrationView, login_view, logout_view
+from web.views import NotesListView, MainRedirectView, NoteDetailView, note_edit_view, RegistrationView, login_view, logout_view
 
 urlpatterns = [
-    path('', main_view, name='main'),
+    path('', MainRedirectView.as_view(), name='main'),
     path('notes/', NotesListView.as_view(), name='notes_list'),
     path('notes/<int:pk>/', NoteDetailView.as_view(), name='note'),
     path('note/add/', note_edit_view, name='notes_add'),
