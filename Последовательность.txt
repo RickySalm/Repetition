@@ -13,3 +13,5 @@
 
 Создание миграций - python manage.py makemigrations
 Выполнение миграций - python manage.py migrate
+
+Создание супер-пользователя - python manage.py createsuperuser
