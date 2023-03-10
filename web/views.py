@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from web.form import NoteForm, AuthForm
 from web.models import Note, Tag, User
@@ -60,12 +60,11 @@ class NotesListView(ListView):
         }
 
 
-@login_required
-def note_view(request, id):
-    note = get_object_or_404(Note, user=request.user, id=id)
-    return render(request, 'web/note.html', {
-        'note': note
-    })
+class NoteDetailView(DetailView):
+    template_name = 'web/note.html'
+
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
 
 
 @login_required
