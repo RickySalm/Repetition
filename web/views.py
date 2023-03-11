@@ -124,7 +124,9 @@ def login_view(request):
                 message = 'Электронная почта или пароль не правильный'
             else:
                 login(request, user)
-
+                next_url = 'main'
+                if 'next' in request.GET:
+                    next_url = request.GET.get('next')
                 return redirect(next_url)
     return render(request, 'web/login.html', {
         'form': form,
