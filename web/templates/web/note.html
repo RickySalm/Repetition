@@ -10,7 +10,9 @@
 <body>
 
     <a href="{% url 'notes_list' %}">Список заметок</a>
-    <a href="{% url 'notes_edit' object.id%}">Редактировать заметку</a>
+    <a href="{% url 'notes_edit' object.id %}">Редактировать заметку</a>
+    <a href="{% url 'notes_delete' object.id %}">Удалить заметку</a>
+
 
     <h1>{{ object.title }}</h1>
 
