@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DetailView, RedirectView, FormView, CreateView
+from django.views.generic import ListView, DetailView, RedirectView, FormView, CreateView, UpdateView
 
 from web.form import NoteForm, AuthForm
 from web.models import Note, Tag, User
@@ -63,7 +63,7 @@ class NoteDetailView(DetailView):
         return Note.objects.filter(user=self.request.user)
 
 
-class NoteCreateFormView(CreateView):
+class NoteEditMixin:
     form_class = NoteForm
     template_name = 'web/note_form.html'
 
@@ -74,26 +74,24 @@ class NoteCreateFormView(CreateView):
         return reverse('note', args=(self.object.id,))
 
 
+class NoteCreateFormView(CreateView, NoteEditMixin):
+    pass
 
-@login_required
-def note_edit_view(request, id=None):
-    form = NoteForm()
-    note = None
 
-    if id is not None:
-        note = get_object_or_404(Note, user=request.user, id=id)
-        form = NoteForm(instance=note)
+class NoteUpdateView(NoteEditMixin, UpdateView):
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
 
-    if request.method == 'POST':
-        form = NoteForm(request.POST, instance=note, initial={'user': request.user})
-        if form.is_valid():
-            note = form.save()
-            return redirect('note', note.id)
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Note.objects.none()
+        return Note.objects.filter(user=self.request.user)
 
-    return render(request, 'web/note_form.html', {
-        'id': id,
-        'form': form,
-    })
+    def get_context_data(self, **kwargs):
+        return {
+            **super(NoteUpdateView, self).get_context_data(),
+            'id': self.kwargs[self.slug_url_kwarg],
+        }
 
 
 class RegistrationView(View):
@@ -113,25 +111,6 @@ class RegistrationView(View):
             User.objects.create_user(**form.cleaned_data)
             is_success = True
         return self._render(request, form, is_success)
-
-
-class LoginView(FormView):
-    template_name = 'web/login.html'
-    form_class = AuthForm
-
-    def get_success_url(self):
-        next_url = reverse('main')
-        if 'next' in self.request.GET:
-            next_url = self.request.GET.get('next')
-        return next_url
-
-    def form_valid(self, form):
-        user = authenticate(self.request, **form.cleaned_data)
-        if user is None:
-            self.message = 'Электронная почта или пароль не правильный'
-        else:
-            login(self.request, user)
-        return super(LoginView, self).form_valid(form)
 
 
 def login_view(request):
