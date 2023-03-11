@@ -4,11 +4,10 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, DetailView, RedirectView
+from django.views.generic import ListView, DetailView, RedirectView, FormView, CreateView
 
 from web.form import NoteForm, AuthForm
 from web.models import Note, Tag, User
-
 
 
 class NotesListView(ListView):
@@ -64,6 +63,18 @@ class NoteDetailView(DetailView):
         return Note.objects.filter(user=self.request.user)
 
 
+class NoteCreateFormView(CreateView):
+    form_class = NoteForm
+    template_name = 'web/note_form.html'
+
+    def get_initial(self):
+        return {'user': self.request.user}
+
+    def get_success_url(self):
+        return reverse('note', args=(self.object.id,))
+
+
+
 @login_required
 def note_edit_view(request, id=None):
     form = NoteForm()
@@ -104,6 +115,25 @@ class RegistrationView(View):
         return self._render(request, form, is_success)
 
 
+class LoginView(FormView):
+    template_name = 'web/login.html'
+    form_class = AuthForm
+
+    def get_success_url(self):
+        next_url = reverse('main')
+        if 'next' in self.request.GET:
+            next_url = self.request.GET.get('next')
+        return next_url
+
+    def form_valid(self, form):
+        user = authenticate(self.request, **form.cleaned_data)
+        if user is None:
+            self.message = 'Электронная почта или пароль не правильный'
+        else:
+            login(self.request, user)
+        return super(LoginView, self).form_valid(form)
+
+
 def login_view(request):
     form = AuthForm()
     message = None
@@ -115,9 +145,7 @@ def login_view(request):
                 message = 'Электронная почта или пароль не правильный'
             else:
                 login(request, user)
-                next_url = 'main'
-                if 'next' in request.GET:
-                    next_url = request.GET.get('next')
+
                 return redirect(next_url)
     return render(request, 'web/login.html', {
         'form': form,
